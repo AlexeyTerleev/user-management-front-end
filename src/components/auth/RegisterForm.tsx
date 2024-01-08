@@ -21,6 +21,26 @@ const RegisterForm = (props: Props) => {
         />
       </div>
       <div className={styles.Input}>
+        <label htmlFor="username">Username</label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          required
+          placeholder="Username"
+        />
+      </div>
+      <div className={styles.Input}>
+        <label htmlFor="phone">Phone</label>
+        <input
+          id="phone"
+          name="phone"
+          type="text"
+          required
+          placeholder="Phone number"
+        />
+      </div>
+      <div className={styles.Input}>
         <label htmlFor="email">Email</label>
         <input
           id="email"
@@ -28,6 +48,16 @@ const RegisterForm = (props: Props) => {
           type="email"
           required
           placeholder="Email Address"
+        />
+      </div>
+      <div className={styles.Input}>
+        <label htmlFor="group">Group</label>
+        <input
+          id="group"
+          name="group"
+          type="text"
+          required
+          placeholder="Group name"
         />
       </div>
       <div className={styles.Input}>

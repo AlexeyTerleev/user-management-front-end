@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useContext } from "react";
+import { useState, useCallback, useContext } from "react";
 import axios from 'axios';
 import AuthContext from "../../store/auth/AuthContextProvider";
 
@@ -39,8 +39,7 @@ const useApi = () => {
             } catch (error: any) {
                 const status = error.response.status;
 
-                if (status == 401 || status == 403) {
-                    console.log("attemp");
+                if (status == 401) {
                     try {
                         await handleRefresh();
                     } catch (refreshError) {
