@@ -8,6 +8,7 @@ import { AuthData } from "../../hooks/api/apiData";
 import { useLocation, useNavigate } from "react-router-dom";
 import LoginForm from "./LoginForm";
 import RegisterForm from "./RegisterForm";
+import styles from "./Auth.module.css"
 
 const Auth = () => {
   const [authData, setAuthData] = useState<AuthData>();
@@ -121,14 +122,16 @@ const Auth = () => {
   };
 
   return (
-    <>
-      <h2>{isLogin ? 'Log In' : 'Sign Up'}</h2>
-      {
-        isLogin
-          ? <LoginForm onSubmit={loginHandler} />
-          : <RegisterForm onSubmit={registerHandler} />
-      }
-    </>
+    <div className={styles.FormContainier}>
+      <div className={styles.FormWrapper}>
+        <h2 className={styles.Title}>{isLogin ? 'Log In' : 'Sign Up'}</h2>
+        {
+          isLogin
+            ? <LoginForm onSubmit={loginHandler} />
+            : <RegisterForm onSubmit={registerHandler} />
+        }
+      </div>
+    </div>
   );
 };
 

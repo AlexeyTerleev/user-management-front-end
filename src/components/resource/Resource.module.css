@@ -1,16 +1,22 @@
 .Resource {
     display: flex;
     flex-direction: column;
-    gap: 30px;
-  }
+    width: 100vw;
+    height: 100vh;
+    background-color: blanchedalmond;
+}
   
-  .Resource button {
+.Resource button {
     width: 10%;
     padding: 5px;
     margin: 0 auto;
     min-width: 175px;
-  }
-  
-  .Resource button:hover {
+}
+
+.Resource button:hover {
     cursor: pointer;
-  }
+}
+
+.Header {
+  background-color: aqua;
+}

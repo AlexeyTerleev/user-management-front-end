@@ -30,6 +30,7 @@ const Resource = () => {
 
   return (
     <div className={styles.Resource}>
+      <div className={styles.Header}>User Management</div>
       <h1>{JSON.stringify(data)}</h1>
       <button onClick={globalLogOutDispatch}>Log Out</button>
     </div>

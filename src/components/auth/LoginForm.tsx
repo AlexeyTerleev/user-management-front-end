@@ -11,28 +11,28 @@ const LoginForm = (props: Props) => {
     return (
         <form onSubmit={onSubmit} className={styles.Form}>
             <div className={styles.Input}>
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">Username</label>
                 <input
                     id="email"
                     name="email"
                     type="email"
                     required
-                    placeholder="Email Address"
+                    placeholder="Type your username or email"
                 />
             </div>
             <div className={styles.Input}>
                 <label htmlFor="password">Password</label>
                 <input
-                id="password"
-                name="password"
-                type="password"
-                required
-                placeholder="Password"
+                    id="password"
+                    name="password"
+                    type="password"
+                    required
+                    placeholder="Type your password"
                 />
             </div>
             <button type="submit">Submit</button>
             <Link className={styles.Link} to={"/auth/register"}>
-                Don't have an account? Sign up
+                Sign up
             </Link>
         </form>
     );

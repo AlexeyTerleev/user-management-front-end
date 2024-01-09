@@ -72,7 +72,7 @@ const RegisterForm = (props: Props) => {
       </div>
       <button type="submit">Submit</button>
       <Link className={styles.Link} to={"/auth/login"}>
-        Already have an account? Sign in
+        Sign in
       </Link>
     </form>
   );
