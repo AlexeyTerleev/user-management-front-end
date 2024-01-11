@@ -1,0 +1,84 @@
+
+.FormContainier {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+}
+.FormWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 10px;
+}
+
+.Title {
+  align-self: center;
+}
+
+.Form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  width: 350px;
+}
+
+.Input {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.Input input {
+  border: 0;
+  border-bottom: 1px solid #969696;
+  width: 100%;
+  padding: 10px 0 10px 0;
+}
+
+.Input input:focus {
+  outline: none;
+  border-bottom: 1px solid #292929;
+  transition-duration: 300ms;
+}
+.Input input:focus::placeholder {
+  color: #292929;
+  transition-duration: 300ms;
+}
+
+.Input label {
+  text-align: left;
+}
+
+.Form button {
+  margin: 10px;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  width: 100%;
+  background-image: linear-gradient(45deg,  #6c19a3, #c46ffd);
+  color: #fff;
+}
+.Form button:active {
+  background-image: linear-gradient(45deg,  #460f6b, #7e47a3);
+}
+
+.Form button:hover {
+  cursor: pointer;
+}
+
+.Link {
+  text-decoration: none;
+  justify-self: auto;
+  color: #6c19a3
+}
+.Link:active {
+  color: #440f68
+}
+
