@@ -12,12 +12,15 @@ import styles from "./Auth.module.css"
 
 const Auth = () => {
   const [authData, setAuthData] = useState<AuthData>();
-  const { request, setError } = useApi();
+  const { request, error, setError } = useApi();
   const { globalLogInDispatch } = useContext(AuthContext);
   const location = useLocation();
   const navigate = useNavigate();
   const currentPathArray = location.pathname.split('/');
   const isLogin = currentPathArray[currentPathArray.length - 1] === 'login';
+
+  const [wrongUsername, setWrongUsername] = useState(false);
+  const [wrongPassord, setWrongPassword] = useState(false);
 
   useEffect(() => {
     if (authData && "access_token" in authData) {
@@ -29,14 +32,27 @@ const Auth = () => {
   }, [authData, globalLogInDispatch]);
 
   const loginHandler: FormEventHandler<HTMLFormElement> = async (event) => {
+
+    const handleErrorResponse = (error: any) => {
+      if (error.response.status != 400)
+        return null;
+      const reUsername = /^User with (?:\{(?:username|email|phone)\}) \[(?:\{(?:[a-zA-Z0-9_]+)\})\] not found$/;
+      const rePassword = /^Incorrect password$/;
+      if (reUsername.test(error.response.message))
+        setWrongUsername(true);
+      else if (rePassword.test(error.response.message))
+        setWrongPassword(true);
+    }
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    const userEmail = data.get("email");
-    const userPassword = data.get("password");
     try {
       if (
-        !validateEmailFormat(userEmail?.toString() || "") ||
-        !validatePasswordLength(userPassword?.toString() || "")
+        (
+          !validatePhoneFormat(data.get("username")?.toString() || "") &&
+          !validateEmailFormat(data.get("username")?.toString() || "") && 
+          !validateUsernameFormat(data.get("username")?.toString() || "")
+        ) ||
+        !validatePasswordLength(data.get("password")?.toString() || "")
       ) {
         throw new Error("Incorrect credential format!");
       }
@@ -47,12 +63,12 @@ const Auth = () => {
           "Accept": "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
         },
-        data: new URLSearchParams({
-          username: userEmail,
-          password: userPassword,
-        }),
+        data: {
+          username: data.get("username"),
+          password: data.get("password"),
+        },
       };
-      await request(endpoint, params, setAuthData);
+      await request(endpoint, params, setAuthData, handleErrorResponse);
     } catch (error: any) {
       setError(error.message || error);
     }

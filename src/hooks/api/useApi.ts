@@ -46,13 +46,14 @@ const useApi = () => {
                         globalLogOutDispatch();
                     }
                 }
-                else {
+                else if (status == 403) {
                     globalLogOutDispatch();
-                    if (handleErrorResponse) {
-                        handleErrorResponse(error.message || error.response?.data || error);
-                    } else {
-                        setError(error.message || error.response?.data || error);
-                    }
+                }
+
+                if (handleErrorResponse) {
+                    handleErrorResponse(error.message || error.response?.data || error);
+                } else {
+                    setError(error.message || error.response?.data || error);
                 }
             }
 
