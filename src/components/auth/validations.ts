@@ -13,7 +13,7 @@ export const validateNameFormat = (name: string) => {
 };
 
 export const validateUsernameFormat = (username: string) => {
-    const re = /^[a-zA-Z0-9_]{3,16}$/;
+    const re = /^[a-zA-Z0-9_\.]{3,16}$/;
     return !!username && re.test(String(username));
 };
 

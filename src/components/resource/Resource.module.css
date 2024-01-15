@@ -1,22 +1,63 @@
 .Resource {
     display: flex;
     flex-direction: column;
+    justify-content: center;
+    align-items: center;
     width: 100vw;
     height: 100vh;
-    background-color: blanchedalmond;
 }
-  
-.Resource button {
-    width: 10%;
-    padding: 5px;
-    margin: 0 auto;
-    min-width: 175px;
+.ResourceContainer{
+    background-color: #fff;
+    border-radius: 20px;
+    padding: 10px;
 }
 
-.Resource button:hover {
+.UserDataWrapper {
+    display: flex;
+    padding: 0;
+    margin: 0;
+}
+
+.UserPhoto {
+    height: 250px;
+    border-radius: 20px;
+}
+
+.UserData {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding-left: 10px;
+}
+
+.UserDataHeaderWrapper {
+    display: flex;
+    justify-content: space-between;
+}
+
+.UserDataHeaderWrapper div {
+    font-size: 2em;
+    font-weight: 400;
+}
+
+.UserDataHeaderWrapper button {
+    padding: 5px;
+    margin: 5px 0 5px 10px;
+    background-color: #f06b6b;
+    border: none;
+    border-radius: 10px;
+    min-width: 100px;
+    color: #fff;
+}
+
+.UserDataHeaderWrapper button:hover {
     cursor: pointer;
 }
 
-.Header {
-  background-color: aqua;
+.UserDataHeaderWrapper button:active {
+    background-color: #f74545;
+}
+
+.DataRow {
+    font-size: 1.2em;
 }
