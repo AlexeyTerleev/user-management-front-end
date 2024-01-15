@@ -11,11 +11,11 @@ const LoginForm = (props: Props) => {
     return (
         <form onSubmit={onSubmit} className={styles.Form}>
             <div className={styles.Input}>
-                <label htmlFor="email">Username</label>
+                <label htmlFor="username">Username</label>
                 <input
-                    id="email"
-                    name="email"
-                    type="email"
+                    id="username"
+                    name="username"
+                    type="text"
                     required
                     placeholder="Type your username or email"
                 />

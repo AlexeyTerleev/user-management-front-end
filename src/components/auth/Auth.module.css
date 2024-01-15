@@ -56,6 +56,10 @@
   text-align: left;
 }
 
+.WrongInput {
+  background-color: red;
+}
+
 .Form button {
   margin: 10px;
   padding: 10px;
