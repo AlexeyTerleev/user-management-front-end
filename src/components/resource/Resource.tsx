@@ -30,7 +30,6 @@ const Resource = () => {
         };
         await request("/user/me", params, (result) => {
             setData(result);
-            console.log(result)
         });
         } catch (error: any) {
         setError(error.message || error);
