@@ -14,6 +14,7 @@
 
 .UserDataWrapper {
     display: flex;
+    align-items: center;
     padding: 0;
     margin: 0;
 }
@@ -26,7 +27,6 @@
 .UserData {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     padding-left: 10px;
 }
 
@@ -40,24 +40,81 @@
     font-weight: 400;
 }
 
-.UserDataHeaderWrapper button {
+.UserData button {
     padding: 5px;
     margin: 5px 0 5px 10px;
-    background-color: #f06b6b;
     border: none;
     border-radius: 10px;
     min-width: 100px;
     color: #fff;
 }
 
-.UserDataHeaderWrapper button:hover {
+.UserData button:hover {
     cursor: pointer;
 }
 
-.UserDataHeaderWrapper button:active {
+.DiscardButton {
+    background-color: #f06b6b;
+}
+.DiscardButton:active {
     background-color: #f74545;
+}
+
+.ConfirmButton {
+    background-color: #289e24;
+}
+.ConfirmButton:active {
+    background-color: #1e7a1b;
 }
 
 .DataRow {
     font-size: 1.2em;
+    padding-bottom: 5px;
+}
+
+.Input {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.Input input {
+    border: 0;
+    border-bottom: 1px solid #969696;
+    width: 100%;
+    font-size: 1.2em;
+}
+
+.Input input:focus {
+    outline: none;
+    border-bottom: 1px solid #292929;
+    transition-duration: 300ms;
+}
+.Input input:focus::placeholder {
+    color: #292929;
+    transition-duration: 300ms;
+}
+
+.Input label {
+    text-align: left;
+}
+
+.WrongInput label {
+    color: #f74c3f;
+}
+.WrongInput input {
+    color: #f74c3f;
+    border-color: #f74c3f;
+}
+.WrongInput input:focus {
+    color: #f74c3f;
+    border-color: #f74c3f;
+}
+
+
+.ButtonsCont {
+    display: inline-flex;
+    justify-content: center;
 }
