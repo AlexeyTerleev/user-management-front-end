@@ -83,22 +83,21 @@ const RegisterForm = () => {
 
     const registerHandler: FormEventHandler<HTMLFormElement> = async (event) => {
         const handleErrorResponse = (error: any) => {
-            console.log(error.response.data.detail)
             if (error.response.status != 400)
                 return;
-            const reUsername = /^username \[\+\d+\] is already used$/;
-            const reEmail = /^email \[\+\d+\] is already used$/;
-            const rePhone = /^phone_number \[\+\d+\] is already used$/;
+            const reUsername = /^username \[[a-zA-Z0-9_\.]{3,16}\] is already used$/;
+            const reEmail = /^email \[[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\] is already used$/;
+            const rePhone = /^phone_number \[\+\d{3}(\d{2})(\d{3})(\d{2})(\d{2})] is already used$/;
             if (reUsername.test(error.response.data.detail)) {
                 setWrongUsername(true);
                 setShowBadRequestAlert(true);
             }
-            if (reEmail.test(error.response.data.detail)){
-                setWrongEmail(true);
-                setShowBadRequestAlert(true);
-            }
             if (rePhone.test(error.response.data.detail)){
                 setWrongPhone(true);
+                setShowBadRequestAlert(true);
+            }
+            if (reEmail.test(error.response.data.detail)){
+                setWrongEmail(true);
                 setShowBadRequestAlert(true);
             }
         }
@@ -174,7 +173,7 @@ const RegisterForm = () => {
     <>
         {showBadRequestAlert && (
             <div className={styles.Alert}>
-                {wrongName && <p>This username is already taken</p>}
+                {wrongUsername && <p>This username is already taken</p>}
                 {wrongEmail && <p>This email is already used</p>}
                 {wrongPhone && <p>This phone number is already used</p>}
             </div>
