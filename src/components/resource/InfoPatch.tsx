@@ -8,6 +8,7 @@ import {
     validateUsernameFormat,
 } from "../auth/validations.ts"
 import { UserData, UserDataPatch } from "./UserData";
+import PhotoUploader from "./PhotoUploader.tsx";
 import styles from "./Resource.module.css";
 
 interface props {
@@ -189,7 +190,7 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
                     <p>It seems like some fields are incorrect</p>
                 </div>
             )}
-            <img className={styles.UserPhoto} src={user?.img_path} alt="User Image" />
+            <img className={styles.UserPhoto} src={user?.img_path} alt="User Image" onClick={()=>{}} />
             <form onSubmit={editInfoHandler} className={styles.UserData}>
                 <div className={`${styles.Input} ${wrongUsername && styles.WrongInput}`}>
                 <label htmlFor="username">Username</label>
@@ -251,6 +252,7 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
                     <button className={styles.DiscardButton} onClick={()=>handleDiscard()}>Discard</button>
                 </div>
             </form>
+            <PhotoUploader current_photo_url={user?.img_path}/>
         </>
     );
 };

@@ -10,7 +10,7 @@ export interface UserData {
     }
 }
 
-export interface UserDataPatch {
+export interface    UserDataPatch {
     img_path: string;
     username: string;
     name: string;
