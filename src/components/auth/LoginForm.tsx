@@ -104,7 +104,7 @@ const LoginForm = () => {
             )}
             {showWrongFormatAlert && (
                 <div className={styles.Alert}>
-                    <p>It seems like some field in incorrect form</p>
+                    <p>It seems like some fields are incorrect</p>
                 </div>
             )}
             <form onSubmit={loginHandler} className={styles.Form}>

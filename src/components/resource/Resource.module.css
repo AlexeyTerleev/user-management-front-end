@@ -118,3 +118,24 @@
     display: inline-flex;
     justify-content: center;
 }
+
+
+.Alert {
+    position: fixed;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    max-width: 350px;
+    background-color: #f74c3f; 
+    color: white;
+    padding: 15px;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 20px; 
+  }
+  
+  .Alert p {
+    margin: 0;
+    font-size: 14px;
+  }
