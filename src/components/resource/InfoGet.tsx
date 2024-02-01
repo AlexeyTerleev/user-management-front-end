@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import authCtx from "../../store/auth/AuthContextProvider";
-import UserData from "./UserData";
+import { UserData } from "./UserData";
 import styles from "./Resource.module.css";
 
 interface props {

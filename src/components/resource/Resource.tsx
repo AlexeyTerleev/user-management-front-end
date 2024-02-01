@@ -1,6 +1,6 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import useApi from "../../hooks/api/useApi";
-import UserData from "./UserData.ts"
+import { UserData } from "./UserData.ts"
 import InfoGet from "./InfoGet.tsx";
 import InfoPatch from "./InfoPatch.tsx";
 import styles from "./Resource.module.css";
@@ -28,7 +28,7 @@ const Resource = () => {
 
     useEffect(() => {
         fetchData();
-    }, [fetchData]);
+    }, [fetchData, pageState]);
 
     return (
     <div className={styles.Resource}>

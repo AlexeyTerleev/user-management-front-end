@@ -1,4 +1,5 @@
-import { useCallback, useContext, useEffect, useState, ChangeEvent } from "react";
+import { FormEventHandler, useContext, useEffect, useState, ChangeEvent } from "react";
+import useApi from "../../hooks/api/useApi";
 import {
     validateNameFormat,
     validateEmailFormat,
@@ -6,7 +7,7 @@ import {
     validatePhoneFormat,
     validateUsernameFormat,
 } from "../auth/validations.ts"
-import UserData from "./UserData";
+import { UserData, UserDataPatch } from "./UserData";
 import styles from "./Resource.module.css";
 
 interface props {
@@ -16,6 +17,7 @@ interface props {
 
 const InfoPatch: React.FC<props> = ({user, setPageState}) => {
 
+    const { request, setError } = useApi();
     const [editedUser, setEditedUser] = useState<UserData | undefined>(user);
 
     const [wrongName, setWrongName] = useState(false);
@@ -44,25 +46,71 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
         }
     }, [showWrongFormatAlert]);
 
-    const validateEditedUser = (): boolean => {
+    const editInfoHandler: FormEventHandler<HTMLFormElement> = async (event) => {
+        const handleErrorResponse = (error: any) => {
+            if (error.response.status != 400)
+                return;
+            const reUsername = /^username \[[a-zA-Z0-9_\.]{3,16}\] is already used$/;
+            const reEmail = /^email \[[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}\] is already used$/;
+            const rePhone = /^phone_number \[\+\d{3}(\d{2})(\d{3})(\d{2})(\d{2})] is already used$/;
+            if (reUsername.test(error.response.data.detail)) {
+                setWrongUsername(true);
+                setShowBadRequestAlert(true);
+            }
+            if (rePhone.test(error.response.data.detail)){
+                setWrongPhone(true);
+                setShowBadRequestAlert(true);
+            }
+            if (reEmail.test(error.response.data.detail)){
+                setWrongEmail(true);
+                setShowBadRequestAlert(true);
+            }
+        }
+
+        event.preventDefault();
+
+        const data = new FormData(event.currentTarget);
+
+        if (!await validateEditedUser(data)){
+            return;
+        }
+        try {
+            const endpoint = "/user/me";
+            const params = {
+                method: "PATCH",
+                headers: {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                },
+                data: transformToPatchInterfece(findDifferingFields(user, editedUser)),
+            };
+            console.log(params)
+            await request(endpoint, params, () => {setPageState("get")}, handleErrorResponse);
+        } catch (error: any) {
+            console.log(error)
+            setError(error.message || error);
+        }
+    };
+    
+    const validateEditedUser = async (data: FormData): Promise<boolean> => {
         let result = true;
-        if (!validateUsernameFormat(editedUser?.username || "")) {
+        if (!validateUsernameFormat(data.get("username")?.toString() || "")) {
             setWrongUsername(true);
             result = false;
         }
-        if (!validateNameFormat(editedUser?.name + " " + editedUser?.surname)) {
+        if (!validateNameFormat(data.get("name")?.toString() || "")) {
             setWrongName(true);
             result = false;
         }
-        if (!validateEmailFormat(editedUser?.email || "")) {
+        if (!validateEmailFormat(data.get("email")?.toString() || "")) {
             setWrongEmail(true);
             result = false;
         }
-        if (!validatePhoneFormat(editedUser?.phone_number || "")) {
+        if (!validatePhoneFormat(data.get("phone_number")?.toString() || "")) {
             setWrongPhone(true);
             result = false;
         }
-        if (!validateGroupFormat(editedUser?.group.name || "")) {
+        if (!validateGroupFormat(data.get("group")?.toString() || "")) {
             setWrongGroup(true);
             result = false;
         }
@@ -70,6 +118,32 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
             setShowWrongFormatAlert(true);
         }
         return result;
+    }
+
+    const findDifferingFields = (current_user: UserData | undefined, edited_user: UserData | undefined): Partial<UserData> => {
+        const differingFields: Partial<UserData> = {};
+        if (!current_user || !edited_user)
+            return differingFields;
+        Object.keys(edited_user).forEach((key) => {
+            const typedKey = key as keyof UserData;
+            if (current_user[typedKey] !== edited_user[typedKey]) {
+                differingFields[typedKey] = edited_user[typedKey];
+            }
+        });
+        return differingFields;
+    };
+
+    const transformToPatchInterfece = (user: Partial<UserData>): Partial<UserDataPatch> => {
+        const userDataPatch: Partial<UserDataPatch> = {};
+        Object.keys(user).forEach((key) => {
+            if (key === "group") {
+                userDataPatch.group_name = user.group.name;
+            }
+            else {
+                userDataPatch[key as keyof UserDataPatch] = user[key as keyof userData];
+            }
+        });
+        return userDataPatch;
     }
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -97,12 +171,6 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
         setEditedUser(user);
     }, []);
 
-    const handleConfirm = () => {
-        if (validateEditedUser()){
-            setPageState("get");
-        }
-    };
-
     const handleDiscard = () => {
         setPageState("get");
     };
@@ -122,7 +190,7 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
                 </div>
             )}
             <img className={styles.UserPhoto} src={user?.img_path} alt="User Image" />
-            <div className={styles.UserData}>
+            <form onSubmit={editInfoHandler} className={styles.UserData}>
                 <div className={`${styles.Input} ${wrongUsername && styles.WrongInput}`}>
                 <label htmlFor="username">Username</label>
                 <input
@@ -179,10 +247,10 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
                 />
                 </div>
                 <div className={styles.ButtonsCont}>
-                    <button className={styles.ConfirmButton} onClick={()=>handleConfirm()}>Confirm</button>
+                    <button type="submit" className={styles.ConfirmButton}>Confirm</button>
                     <button className={styles.DiscardButton} onClick={()=>handleDiscard()}>Discard</button>
                 </div>
-            </div>
+            </form>
         </>
     );
 };

@@ -110,7 +110,6 @@ const RegisterForm = () => {
             return;
 
         try {
-
             const endpoint = "/auth/singup";
             const params = {
             method: "POST",
