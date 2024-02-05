@@ -6,7 +6,7 @@ import InfoPatch from "./InfoPatch.tsx";
 import styles from "./Resource.module.css";
 
 const Resource = () => {
-    const [data, setData] = useState<UserData | undefined>();
+    const [user, setUser] = useState<UserData | undefined>();
     const [pageState, setPageState] = useState<string>("get");
     const { request, setError } = useApi();
     
@@ -19,16 +19,16 @@ const Resource = () => {
             },
         };
         await request("/user/me", params, (result) => {
-            setData(result);
+            setUser(result);
         });
         } catch (error: any) {
-        setError(error.message || error);
+            setError(error.message || error);
         }
     }, [request, setError]);
 
     useEffect(() => {
         fetchData();
-    }, [fetchData, pageState]);
+    }, []);
 
     return (
     <div className={styles.Resource}>
@@ -36,8 +36,8 @@ const Resource = () => {
             <div className={styles.UserDataWrapper}>    
                 {
                     pageState == "get"
-                        ? <InfoGet user={data} setPageState={setPageState} /> 
-                        : <InfoPatch user={data} setPageState={setPageState} />
+                        ? <InfoGet user={user} setPageState={setPageState} /> 
+                        : <InfoPatch user={user} setUser={setUser} setPageState={setPageState} />
                 }
             </div>
         </div>

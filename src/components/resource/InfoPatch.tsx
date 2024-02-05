@@ -1,31 +1,37 @@
-import { FormEventHandler, useContext, useEffect, useState, ChangeEvent } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import useApi from "../../hooks/api/useApi";
-import {
-    validateNameFormat,
-    validateEmailFormat,
-    validateGroupFormat,
-    validatePhoneFormat,
-    validateUsernameFormat,
-} from "../auth/validations.ts"
-import { UserData, UserDataPatch } from "./UserData";
-import PhotoUploader from "./PhotoUploader.tsx";
+import { UserData } from "./UserData";
+import { 
+    findDifferingFields, 
+    transformToPatchInterfece, 
+    validateEditedUser,
+} from  "./PatchComponents/utils.ts"
+import PhotoUploader from "./PatchComponents/PhotoUploader.tsx";
+import InfoForm from "./PatchComponents/InfoForm.tsx";
 import styles from "./Resource.module.css";
 
 interface props {
     user: UserData | undefined;
+    setUser: React.Dispatch<React.SetStateAction<UserData | undefined>>;
     setPageState: React.Dispatch<React.SetStateAction<string>>;
 }
 
-const InfoPatch: React.FC<props> = ({user, setPageState}) => {
+const InfoPatch: React.FC<props> = ({user, setUser, setPageState}) => {
 
     const { request, setError } = useApi();
+
     const [editedUser, setEditedUser] = useState<UserData | undefined>(user);
+    const [newPhoto, setNewPhoto] = useState<File | undefined>(undefined);
+
+    const timestamp = new Date().getTime();
+    const imgUrlWithTimestamp = `${user?.img_path}?t=${timestamp}`;
 
     const [wrongName, setWrongName] = useState(false);
     const [wrongUsername, setWrongUsername] = useState(false);
     const [wrongPhone, setWrongPhone] = useState(false);
     const [wrongEmail, setWrongEmail] = useState(false);
     const [wrongGroup, setWrongGroup] = useState(false);
+
     const [showBadRequestAlert, setShowBadRequestAlert] = useState(false);
     const [showWrongFormatAlert, setShowWrongFormatAlert] = useState(false);
 
@@ -47,7 +53,8 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
         }
     }, [showWrongFormatAlert]);
 
-    const editInfoHandler: FormEventHandler<HTMLFormElement> = async (event) => {
+    const handlePatchInfo = async (data: Partial<UserData>) => {
+
         const handleErrorResponse = (error: any) => {
             if (error.response.status != 400)
                 return;
@@ -68,13 +75,6 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
             }
         }
 
-        event.preventDefault();
-
-        const data = new FormData(event.currentTarget);
-
-        if (!await validateEditedUser(data)){
-            return;
-        }
         try {
             const endpoint = "/user/me";
             const params = {
@@ -83,94 +83,65 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
                     "Accept": "application/json",
                     "Content-Type": "application/json",
                 },
-                data: transformToPatchInterfece(findDifferingFields(user, editedUser)),
+                data: data,
             };
-            console.log(params)
-            await request(endpoint, params, () => {setPageState("get")}, handleErrorResponse);
+            await request(
+                endpoint, 
+                params, 
+                (result) => {setUser(result)}, 
+                handleErrorResponse,
+            );
         } catch (error: any) {
             console.log(error)
             setError(error.message || error);
         }
     };
-    
-    const validateEditedUser = async (data: FormData): Promise<boolean> => {
-        let result = true;
-        if (!validateUsernameFormat(data.get("username")?.toString() || "")) {
-            setWrongUsername(true);
-            result = false;
-        }
-        if (!validateNameFormat(data.get("name")?.toString() || "")) {
-            setWrongName(true);
-            result = false;
-        }
-        if (!validateEmailFormat(data.get("email")?.toString() || "")) {
-            setWrongEmail(true);
-            result = false;
-        }
-        if (!validatePhoneFormat(data.get("phone_number")?.toString() || "")) {
-            setWrongPhone(true);
-            result = false;
-        }
-        if (!validateGroupFormat(data.get("group")?.toString() || "")) {
-            setWrongGroup(true);
-            result = false;
-        }
-        if (!result) {
-            setShowWrongFormatAlert(true);
-        }
-        return result;
-    }
 
-    const findDifferingFields = (current_user: UserData | undefined, edited_user: UserData | undefined): Partial<UserData> => {
-        const differingFields: Partial<UserData> = {};
-        if (!current_user || !edited_user)
-            return differingFields;
-        Object.keys(edited_user).forEach((key) => {
-            const typedKey = key as keyof UserData;
-            if (current_user[typedKey] !== edited_user[typedKey]) {
-                differingFields[typedKey] = edited_user[typedKey];
-            }
-        });
-        return differingFields;
-    };
+    const handleUploadPhoto = async (photo: File) => {
+        const formData = new FormData();
+        formData.append("photo", photo);
 
-    const transformToPatchInterfece = (user: Partial<UserData>): Partial<UserDataPatch> => {
-        const userDataPatch: Partial<UserDataPatch> = {};
-        Object.keys(user).forEach((key) => {
-            if (key === "group") {
-                userDataPatch.group_name = user.group.name;
-            }
-            else {
-                userDataPatch[key as keyof UserDataPatch] = user[key as keyof userData];
-            }
-        });
-        return userDataPatch;
-    }
-
-    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        if (name === "name") {
-            const fullName =  value.split(" ")
-            if (value.endsWith(" ") && !fullName[1]) {
-                fullName[0] = fullName[0] + " ";
-            }
-            console.log(fullName);
-            setEditedUser((prevUser) => ({
-                ...(prevUser as UserData || user),
-                ["name"]: fullName[0] || "",
-                ["surname"]: fullName[1] || "",
-            }));
-        } else {
-            setEditedUser((prevUser) => ({
-                ...(prevUser as UserData || user),
-                [name]: value,
-            }));
+        try {
+            const endpoint = "/user/me/photo";
+            const params = {
+                method: "PATCH",
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+                data: formData,
+            };
+            await request(endpoint, params, ()=>{});
+        } catch (error: any) {
+            console.log(error)
+            setError(error.message || error);
         }
     };
 
-    useEffect(() => {
-        setEditedUser(user);
-    }, []);
+    const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+
+        e.preventDefault();
+
+        if (
+            validateEditedUser(
+                editedUser, 
+                setWrongName, 
+                setWrongUsername, 
+                setWrongPhone, 
+                setWrongEmail, 
+                setWrongGroup, 
+                setShowWrongFormatAlert
+            )
+        ) {
+            const data = transformToPatchInterfece(findDifferingFields(user, editedUser));
+
+            await Promise.all([
+                newPhoto && handleUploadPhoto(newPhoto),
+                Object.keys(data).length !== 0 && handlePatchInfo(data)
+            ]);
+
+            setPageState("get");
+        }        
+    };
 
     const handleDiscard = () => {
         setPageState("get");
@@ -186,75 +157,24 @@ const InfoPatch: React.FC<props> = ({user, setPageState}) => {
             </div>
             )}
             {showWrongFormatAlert && (
-                <div className={styles.Alert}>
-                    <p>It seems like some fields are incorrect</p>
-                </div>
+            <div className={styles.Alert}>
+                <p>It seems like some fields are incorrect</p>
+            </div>
             )}
-            <img className={styles.UserPhoto} src={user?.img_path} alt="User Image" onClick={()=>{}} />
-            <form onSubmit={editInfoHandler} className={styles.UserData}>
-                <div className={`${styles.Input} ${wrongUsername && styles.WrongInput}`}>
-                <label htmlFor="username">Username</label>
-                <input
-                    id="username"
-                    name="username"
-                    type="text"
-                    required
-                    value={editedUser?.username || ''}
-                    onChange={handleChange}
-                />
-                </div>
-                <div className={`${styles.Input} ${wrongName && styles.WrongInput}`}>
-                <label htmlFor="name">Full name</label>
-                <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    value={(editedUser?.name || "") + ((editedUser?.surname) ? " " +editedUser.surname : "")}
-                    onChange={handleChange}
-                />
-                </div>
-                <div className={`${styles.Input} ${wrongEmail && styles.WrongInput}`}>
-                <label htmlFor="email">Email</label>
-                <input
-                    id="email"
-                    name="email"
-                    type="text"
-                    required
-                    value={editedUser?.email}
-                    onChange={handleChange}
-                />
-                </div>
-                <div className={`${styles.Input} ${wrongPhone && styles.WrongInput}`}>
-                <label htmlFor="phone_number">Phone</label>
-                <input
-                    id="phone_number"
-                    name="phone_number"
-                    type="text"
-                    required
-                    value={editedUser?.phone_number}
-                    onChange={handleChange}
-                />
-                </div>
-                <div className={`${styles.Input} ${wrongGroup && styles.WrongInput}`}>
-                <label htmlFor="group">Group</label>
-                <input
-                    id="group"
-                    name="group"
-                    type="text"
-                    required
-                    value={editedUser?.group.name}
-                    onChange={handleChange}
-                />
-                </div>
-                <div className={styles.ButtonsCont}>
-                    <button type="submit" className={styles.ConfirmButton}>Confirm</button>
-                    <button className={styles.DiscardButton} onClick={()=>handleDiscard()}>Discard</button>
-                </div>
-            </form>
-            <PhotoUploader current_photo_url={user?.img_path}/>
+            <PhotoUploader dynamicPhotoUrl={imgUrlWithTimestamp} newPhoto={newPhoto} setNewPhoto={setNewPhoto}/>
+            <InfoForm 
+                editedUser={editedUser} 
+                setEditedUser={setEditedUser} 
+                handleSubmit={handleSubmit} 
+                handleDiscard={handleDiscard} 
+                wrongName={wrongName}
+                wrongUsername={wrongUsername}
+                wrongPhone={wrongPhone}
+                wrongEmail={wrongEmail}
+                wrongGroup={wrongGroup}
+            />
         </>
     );
 };
 
-export default InfoPatch;
+export default React.memo(InfoPatch);;
