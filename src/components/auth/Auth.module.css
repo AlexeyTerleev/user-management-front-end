@@ -56,8 +56,16 @@
   text-align: left;
 }
 
-.WrongInput {
-  background-color: red;
+.WrongInput label {
+  color: #f74c3f;
+}
+.WrongInput input {
+  color: #f74c3f;
+  border-color: #f74c3f;
+}
+.WrongInput input:focus {
+  color: #f74c3f;
+  border-color: #f74c3f;
 }
 
 .Form button {
@@ -86,3 +94,45 @@
   color: #440f68
 }
 
+.Alert {
+  position: fixed;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80%;
+  max-width: 350px;
+  background-color: #f74c3f; 
+  color: white;
+  padding: 15px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px; 
+}
+
+.Alert p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.SwitcherContainer {
+  display: flex;
+  overflow: hidden;
+  position: relative;
+}
+
+.SwitcherLabel {
+  flex: 1;
+  text-align: center;
+  margin-top: 10px;
+  padding: 10px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  border-radius: 20px;
+  width: 80px;
+  font-size: 13.333px;
+}
+
+.SwitcherLabel.selected {
+  border: 1px solid #969696;
+  border-radius: 20px;
+}

@@ -29,11 +29,6 @@ const useApi = () => {
                 data: params.data,
             }
             try {
-                const headers = params.headers || {};
-                if (authState.isLoggedIn) {
-                    headers['Authorization'] = 'Bearer ' + authState.accessToken;
-                }
-                
                 const response = await axios(requestData);
                 handleSuccessResponse && (await handleSuccessResponse(response.data));
             } catch (error: any) {
@@ -51,7 +46,8 @@ const useApi = () => {
                 }
 
                 if (handleErrorResponse) {
-                    handleErrorResponse(error.message || error.response?.data || error);
+                    handleErrorResponse(error)
+                    setError(error.message || error.response?.data || error);;
                 } else {
                     setError(error.message || error.response?.data || error);
                 }
@@ -71,12 +67,10 @@ const useApi = () => {
             });
 
             const newTokenPair = refreshResponse.data;
-            console.log(newTokenPair);
             await globalLogInDispatch({
                 accessToken: newTokenPair.access_token,
                 refreshToken: newTokenPair.refresh_token,
             });
-            console.log(authState)
             
         } catch (refreshError) {
             throw refreshError;

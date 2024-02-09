@@ -1,40 +1,48 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import useApi from "../../hooks/api/useApi";
-import authCtx from "../../store/auth/AuthContextProvider";
+import { UserData } from "./UserData.ts"
+import InfoGet from "./InfoGet.tsx";
+import InfoPatch from "./InfoPatch.tsx";
 import styles from "./Resource.module.css";
 
 const Resource = () => {
-  const [data, setData] = useState();
-  const { request, setError } = useApi();
-  const { globalLogOutDispatch } = useContext(authCtx);
+    const [user, setUser] = useState<UserData | undefined>();
+    const [pageState, setPageState] = useState<string>("get");
+    const { request, setError } = useApi();
+    
+    const fetchData = useCallback(async () => {
+        try {
+        const params = {
+            method: "GET",
+            headers: {
+            "Content-Type": "application/json",
+            },
+        };
+        await request("/user/me", params, (result) => {
+            setUser(result);
+        });
+        } catch (error: any) {
+            setError(error.message || error);
+        }
+    }, [request, setError]);
 
-  const fetchData = useCallback(async () => {
-    try {
-      const params = {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      await request("/user/me", params, (result) => {
-        setData(result);
-      });
-    } catch (error: any) {
-      setError(error.message || error);
-    }
-  }, [request, setError]);
+    useEffect(() => {
+        fetchData();
+    }, []);
 
-  useEffect(() => {
-    fetchData();
-  }, [fetchData]);
-
-  return (
+    return (
     <div className={styles.Resource}>
-      <div className={styles.Header}>User Management</div>
-      <h1>{JSON.stringify(data)}</h1>
-      <button onClick={globalLogOutDispatch}>Log Out</button>
+        <div className={styles.ResourceContainer}>
+            <div className={styles.UserDataWrapper}>    
+                {
+                    pageState == "get"
+                        ? <InfoGet user={user} setPageState={setPageState} /> 
+                        : <InfoPatch user={user} setUser={setUser} setPageState={setPageState} />
+                }
+            </div>
+        </div>
     </div>
-  );
+    );
 };
 
 export default Resource;

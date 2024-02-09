@@ -24,9 +24,9 @@ function App() {
                 )}
 
                 {authState.isLoggedIn && (
-                <Route path="resource" element={<Resource />} />
+                    <Route path="me" element={<Resource />}/>
                 )}
-                <Route path="*" element={<Navigate to={authState.isLoggedIn ? "resource" : "/auth/login"}/>} />
+                <Route path="*" element={<Navigate to={authState.isLoggedIn ? "/me" : "/auth/login"}/>} />
             </Routes>
         </div>
     );
