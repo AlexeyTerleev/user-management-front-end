@@ -5,6 +5,7 @@ export interface UserData {
     surname: string;
     email: string;
     phone_number: string;
+    role: string;
     group: {
         name: string
     }

@@ -1,8 +1,9 @@
 import { useCallback, useContext, useEffect, useState } from "react";
 import useApi from "../../hooks/api/useApi";
-import { UserData } from "./UserData.ts"
+import { UserData } from "../../types/UserTypes"
 import InfoGet from "./InfoGet.tsx";
 import InfoPatch from "./InfoPatch.tsx";
+import SideMenu from "../sideMenu/SideMenu.tsx";
 import styles from "./Resource.module.css";
 
 const Resource = () => {
@@ -32,7 +33,8 @@ const Resource = () => {
 
     return (
     <div className={styles.Resource}>
-        <div className={styles.ResourceContainer}>
+        <SideMenu role={user?.role} />
+        <div className={styles.UserDataContainer}>
             <div className={styles.UserDataWrapper}>    
                 {
                     pageState == "get"

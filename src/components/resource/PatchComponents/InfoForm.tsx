@@ -1,6 +1,6 @@
 import { FormEventHandler, ChangeEvent } from "react";
 
-import { UserData } from "../UserData";
+import { UserData } from "../../../types/UserTypes";
 import styles from "../Resource.module.css";
 
 interface props {

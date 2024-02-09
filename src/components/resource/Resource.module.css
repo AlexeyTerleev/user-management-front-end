@@ -1,12 +1,8 @@
-.Resource {
+.Resource{
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    width: 100vw;
-    height: 100vh;
 }
-.ResourceContainer{
+
+.UserDataContainer{
     background-color: #fff;
     border-radius: 20px;
     padding: 10px;

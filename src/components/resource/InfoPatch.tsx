@@ -1,6 +1,6 @@
 import React, { FormEvent, useEffect, useState } from "react";
 import useApi from "../../hooks/api/useApi";
-import { UserData } from "./UserData";
+import { UserData } from "../../types/UserTypes";
 import { 
     findDifferingFields, 
     transformToPatchInterfece, 

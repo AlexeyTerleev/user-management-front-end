@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { UserData } from "./UserData";
+import { UserData } from "../../types/UserTypes";
 import UserPhoto from "./GetComponents/UserPhoto";
 import UserInfo from "./GetComponents/UserInfo";
 import FullSizePhoto from "./GetComponents/FullSizePhoto";

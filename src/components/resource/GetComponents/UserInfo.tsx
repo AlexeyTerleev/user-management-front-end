@@ -1,6 +1,6 @@
 import { useContext } from "react"
 import authCtx from "../../../store/auth/AuthContextProvider";
-import { UserData } from "../UserData";
+import { UserData } from "../../../types/UserTypes";
 import styles from "../Resource.module.css";
 
 

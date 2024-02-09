@@ -1,4 +1,4 @@
-import { UserData, UserDataPatch } from "../UserData"
+import { UserData, UserDataPatch } from "../../../types/UserTypes"
 import {
     validateNameFormat,
     validateEmailFormat,

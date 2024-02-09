@@ -1,0 +1,21 @@
+
+.SidePanelWrapper {
+    background-color: #fff; /* Set background color of the div to white */
+    padding: 10px; /* Add padding as needed */
+    margin-right: 10px;
+    border-radius: 20px;
+    min-width: 150px;
+}
+  
+.SidePanel {
+    list-style-type: none; /* Remove default list styles */
+    padding: 0; /* Remove default padding */
+    margin: 0; /* Remove default margin */
+}
+
+.SidePanel li {
+    background-color: aqua;
+    padding: 10px; /* Add padding as needed */
+    margin-bottom: 5px;
+}
+  
